@@ -13,19 +13,18 @@
   <style>
     .canvas {
       height: 100vh;
-      width:100%;
+      width: 100%;
     }
 
     .Frame {
       margin-top: 100vh;
       /* margin-left: 100px; */
     }
-
   </style>
 
   <body>
     <!-- <div class="Frame"> -->
-      <canvas id="canvas" class="canvas"></canvas>
+    <canvas id="canvas" class="canvas"></canvas>
     <!-- </div> -->
     <script>
       const canvas = document.getElementById("canvas");
@@ -60,9 +59,11 @@
         );
 
         // This targets the camera to scene origin
-        camera2.setTarget(new BABYLON.Vector3(0, 0, 15));
+        camera2.setTarget(new BABYLON.Vector3(0, 0, 10));
 
-
+        // Sets the sensitivity of the camera to movement and rotation
+        camera.angularSensibility = 10;
+        camera.moveSensibility = 10;
 
         var advancedTexture =
           BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -75,7 +76,6 @@
         button1.fontSize = 20;
         button1.background = "green";
         button1.onPointerUpObservable.add(function () {
-          // alert("you did it!");
           scene.activeCameras.push(camera);
         });
         advancedTexture.addControl(button1);
@@ -88,7 +88,6 @@
         button2.fontSize = 20;
         button2.background = "green";
         button2.onPointerUpObservable.add(function () {
-          // alert("you did it!");
           scene.activeCameras.push(camera2);
         });
         advancedTexture.addControl(button2);
