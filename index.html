@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Babylon first Project</title>
+    <!-- <script src="https://cdn.babylonjs.com/babylon.js"></script> -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+
+</head>
+<style>
+    .canvas {
+        height: 100%;
+        width: 70%;
+    }
+    
+    .Frame {
+        margin-top: 100px;
+        margin-left: 300px;
+    }
+    
+    button {
+        display: block;
+        margin-left: 300px;
+    }
+</style>
+
+<body>
+    <div class="Frame">
+        <canvas id="canvas" class="canvas"></canvas>
+        <button type="button" onclick="view1()">View 1</button>
+        <button type="button" onclick="view2()">View 2</button>
+    </div>
+    <script>
+
+
+        const canvas = document.getElementById("canvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        var createScene = function() {
+     
+            const scene = new BABYLON.Scene(engine);
+            const alpha = -Math.PI / 4;
+            const beta = Math.PI / 3;
+            const radius = 6;
+            const target = new BABYLON.Vector3(0, 0, 0);
+            const camera = new BABYLON.ArcRotateCamera("Camera", alpha, beta, radius, target, scene);
+            camera.attachControl(canvas, true);
+            camera.lowerRadiusLimit = 3
+            camera.upperRadiusLimit = 8
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+
+            const videoLayer = new BABYLON.Layer('videoLayer', null, scene, true);
+            const videoTexture = BABYLON
+                .VideoTexture
+                .CreateFromWebCam(
+                    scene, (videoTexture) => {
+                        videoTexture._invertY = false;
+                        videoTexture
+                        videoLayer.texture = videoTexture;
+                    }, {
+                        minWidth: 640,
+                        minHeight: 480,
+                        maxWidth: 1920,
+                        maxHeight: 1080,
+                        deviceId: ''
+                    });
+            const fish = BABYLON.SceneLoader.ImportMesh("", "mymesh/", "fish.glb", scene, function(newMeshes) {
+                newMeshes[0].scaling = new BABYLON.Vector3(3, 3, 3);
+            });
+            fish.parent = camera;
+            camera.minZ = 0
+
+            return scene;
+        };
+        const sceneToRender = createScene();
+        engine.runRenderLoop(function() {
+            sceneToRender.render();
+        });
+    </script>
+</body>
+
+</html>
