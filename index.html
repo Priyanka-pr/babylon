@@ -1,86 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Babylon first Project</title>
     <!-- <script src="https://cdn.babylonjs.com/babylon.js"></script> -->
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-
-</head>
-<style>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+  </head>
+  <style>
     .canvas {
-        height: 100%;
-        width: 70%;
+      height: 100%;
+      width: 70%;
     }
-    
-    .Frame {
-        margin-top: 100px;
-        margin-left: 300px;
-    }
-    
-    button {
-        display: block;
-        margin-left: 300px;
-    }
-</style>
 
-<body>
+    .Frame {
+      margin-top: 100px;
+      margin-left: 300px;
+    }
+
+    button {
+      display: block;
+      margin-left: 300px;
+    }
+  </style>
+
+  <body>
     <div class="Frame">
-        <canvas id="canvas" class="canvas"></canvas>
-        <button type="button" onclick="view1()">View 1</button>
-        <button type="button" onclick="view2()">View 2</button>
+      <canvas id="canvas" class="canvas"></canvas>
     </div>
     <script>
+      const canvas = document.getElementById("canvas");
+      const engine = new BABYLON.Engine(canvas, true);
+
+      var createScene = function () {
+        const scene = new BABYLON.Scene(engine);
+        const alpha = -Math.PI / 4;
+        const beta = Math.PI / 3;
+        const radius = 6;
+        const target = new BABYLON.Vector3(0, 0, 0);
+        const camera = new BABYLON.ArcRotateCamera(
+          "Camera",
+          alpha,
+          beta,
+          radius,
+          target,
+          scene
+        );
+        camera.attachControl(canvas, true);
+        camera.lowerRadiusLimit = 3;
+        camera.upperRadiusLimit = 8;
+        const light = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(1, 1, 0)
+        );
+
+        var camera2 = new BABYLON.DeviceOrientationCamera(
+          "DevOr_camera",
+          new BABYLON.Vector3(0, 0, 0),
+          scene
+        );
+
+        // This targets the camera to scene origin
+        camera2.setTarget(new BABYLON.Vector3(0, 0, 15));
 
 
-        const canvas = document.getElementById("canvas");
-        const engine = new BABYLON.Engine(canvas, true);
 
-        var createScene = function() {
-     
-            const scene = new BABYLON.Scene(engine);
-            const alpha = -Math.PI / 4;
-            const beta = Math.PI / 3;
-            const radius = 6;
-            const target = new BABYLON.Vector3(0, 0, 0);
-            const camera = new BABYLON.ArcRotateCamera("Camera", alpha, beta, radius, target, scene);
-            camera.attachControl(canvas, true);
-            camera.lowerRadiusLimit = 3
-            camera.upperRadiusLimit = 8
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+        var advancedTexture =
+          BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-            const videoLayer = new BABYLON.Layer('videoLayer', null, scene, true);
-            const videoTexture = BABYLON
-                .VideoTexture
-                .CreateFromWebCam(
-                    scene, (videoTexture) => {
-                        videoTexture._invertY = false;
-                        videoTexture
-                        videoLayer.texture = videoTexture;
-                    }, {
-                        minWidth: 640,
-                        minHeight: 480,
-                        maxWidth: 1920,
-                        maxHeight: 1080,
-                        deviceId: ''
-                    });
-            const fish = BABYLON.SceneLoader.ImportMesh("", "mymesh/", "fish.glb", scene, function(newMeshes) {
-                newMeshes[0].scaling = new BABYLON.Vector3(3, 3, 3);
-            });
-            fish.parent = camera;
-            camera.minZ = 0
-
-            return scene;
-        };
-        const sceneToRender = createScene();
-        engine.runRenderLoop(function() {
-            sceneToRender.render();
+        var button1 = BABYLON.GUI.Button.CreateSimpleButton("button1", "View1");
+        button1.top = "120px";
+        button1.width = 0.1;
+        button1.height = 0.1;
+        button1.color = "white";
+        button1.fontSize = 20;
+        button1.background = "green";
+        button1.onPointerUpObservable.add(function () {
+          // alert("you did it!");
+          scene.activeCameras.push(camera);
         });
-    </script>
-</body>
+        advancedTexture.addControl(button1);
 
+        var button2 = BABYLON.GUI.Button.CreateSimpleButton("button2", "View2");
+        button2.top = "180px";
+        button2.width = 0.1;
+        button2.height = 0.1;
+        button2.color = "white";
+        button2.fontSize = 20;
+        button2.background = "green";
+        button2.onPointerUpObservable.add(function () {
+          // alert("you did it!");
+          scene.activeCameras.push(camera2);
+        });
+        advancedTexture.addControl(button2);
+
+        const videoLayer = new BABYLON.Layer("videoLayer", null, scene, true);
+        const videoTexture = BABYLON.VideoTexture.CreateFromWebCam(
+          scene,
+          (videoTexture) => {
+            videoTexture._invertY = false;
+            videoTexture;
+            videoLayer.texture = videoTexture;
+          },
+          {
+            minWidth: 640,
+            minHeight: 480,
+            maxWidth: 1920,
+            maxHeight: 1080,
+            deviceId: "",
+          }
+        );
+        const fish = BABYLON.SceneLoader.ImportMesh(
+          "",
+          "mymesh/",
+          "fish.glb",
+          scene,
+          function (newMeshes) {
+            newMeshes[0].scaling = new BABYLON.Vector3(3, 3, 3);
+          }
+        );
+        fish.parent = camera;
+        camera.minZ = 0;
+
+        return scene;
+      };
+      const sceneToRender = createScene();
+      engine.runRenderLoop(function () {
+        sceneToRender.render();
+      });
+    </script>
+  </body>
 </html>
