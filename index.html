@@ -54,16 +54,19 @@
 
         var camera2 = new BABYLON.DeviceOrientationCamera(
           "DevOr_camera",
-          new BABYLON.Vector3(0, 0, 0),
+          alpha,
+          beta,
+          radius,
+          target,
           scene
         );
 
         // This targets the camera to scene origin
-        camera2.setTarget(new BABYLON.Vector3(0, 0, 10));
+        camera2.setTarget(new BABYLON.Vector3(0, 0, -10));
 
         // Sets the sensitivity of the camera to movement and rotation
-        camera.angularSensibility = 2;
-        camera.moveSensibility = 2;
+        camera2.angularSensibility = 2;
+        camera2.moveSensibility = 2;
 
         var advancedTexture =
           BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
