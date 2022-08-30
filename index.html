@@ -50,7 +50,7 @@
 
         var camera2 = new BABYLON.DeviceOrientationCamera(
           "DevOr_camera",
-          0,0,-10,
+          new BABYLON.Vector3(0, 0, -10),
           scene
         );
 
@@ -76,7 +76,7 @@
         button1.background = "green";
         button1.onPointerUpObservable.add(function () {
           console.log('button1');
-          scene.activeCamera= camera;
+          scene.activeCamera = camera;
         });
         advancedTexture.addControl(button1);
 
