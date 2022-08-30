@@ -16,10 +16,6 @@
       width: 100%;
     }
 
-    .Frame {
-      margin-top: 100vh;
-      /* margin-left: 100px; */
-    }
   </style>
 
   <body>
@@ -30,7 +26,7 @@
       const canvas = document.getElementById("canvas");
       const engine = new BABYLON.Engine(canvas, true);
 
-      var createScene = function () {
+      var createScene = async function () {
         const scene = new BABYLON.Scene(engine);
         const alpha = -Math.PI / 4;
         const beta = Math.PI / 3;
@@ -54,45 +50,47 @@
 
         var camera2 = new BABYLON.DeviceOrientationCamera(
           "DevOr_camera",
-          alpha,
-          beta,
-          radius,
-          target,
+          0,0,-10,
           scene
         );
 
+        camera2.lowerRadiusLimit = 3;
+        camera2.upperRadiusLimit = 8;
         // This targets the camera to scene origin
-        camera2.setTarget(new BABYLON.Vector3(0, 0, -10));
+        camera2.setTarget(new BABYLON.Vector3(0, 0, 0));
 
         // Sets the sensitivity of the camera to movement and rotation
-        camera2.angularSensibility = 2;
-        camera2.moveSensibility = 2;
+        camera2.angularSensibility = 1;
+        camera2.moveSensibility = 1;
 
         var advancedTexture =
           BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         var button1 = BABYLON.GUI.Button.CreateSimpleButton("button1", "View1");
         button1.top = "120px";
-        button1.width = 0.1;
+        button1.width = 0.2;
         button1.height = 0.1;
         button1.color = "white";
         button1.fontSize = 20;
         button1.background = "green";
         button1.onPointerUpObservable.add(function () {
-          scene.activeCameras.push(camera);
+          console.log('button1');
+          scene.activeCameras= camera;
         });
         advancedTexture.addControl(button1);
 
         var button2 = BABYLON.GUI.Button.CreateSimpleButton("button2", "View2");
         button2.top = "180px";
-        button2.width = 0.1;
+        button2.width = 0.2;
         button2.height = 0.1;
         button2.color = "white";
         button2.fontSize = 20;
         button2.background = "green";
         button2.onPointerUpObservable.add(function () {
-          scene.activeCameras.push(camera2);
+          console.log('button2');
+          scene.activeCameras= camera2;
         });
+
         advancedTexture.addControl(button2);
 
         const videoLayer = new BABYLON.Layer("videoLayer", null, scene, true);
@@ -125,9 +123,14 @@
 
         return scene;
       };
-      const sceneToRender = createScene();
+
+      scene = createScene();
+      scene.then((returnedScene) => {
+        // console.log(returnedScene);
+        sceneToRender = returnedScene;
+      });
       engine.runRenderLoop(function () {
-        sceneToRender.render();
+          sceneToRender.render();
       });
     </script>
   </body>
