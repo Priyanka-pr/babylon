@@ -76,7 +76,7 @@
         button1.background = "green";
         button1.onPointerUpObservable.add(function () {
           console.log('button1');
-          scene.activeCameras= camera;
+          scene.activeCamera= camera;
         });
         advancedTexture.addControl(button1);
 
@@ -89,7 +89,7 @@
         button2.background = "green";
         button2.onPointerUpObservable.add(function () {
           console.log('button2');
-          scene.activeCameras= camera2;
+          scene.activeCamera = camera2;
         });
 
         advancedTexture.addControl(button2);
